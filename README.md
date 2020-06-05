@@ -11,11 +11,10 @@ Login Page automated test using codeception framework.
 - [Reporting](#reporting)
 
 #### Prerequisites
-
-- [Installed PHP 7.3 or higher](https://www.php.net/)
-- [Installed PHP Composer](https://getcomposer.org/)
-- [Installed Chrome browser](https://www.google.com/chrome/)
-- [Installed NPM Allure Commandline](https://www.npmjs.com/package/allure-commandline) (Optional)
+- <a href="https://www.php.net/" target="_blank">Installed PHP 7.3 or higher</a>
+- <a href="https://getcomposer.org/" target="_blank">Installed PHP Composer</a>
+- <a href="https://www.google.com/chrome/" target="_blank">Installed Google Chrome browser</a>
+- <a href="https://www.npmjs.com/package/allure-commandline" target="_blank">Installed NPM Allure Commandline</a>
 
 #### Setup
 - Download or clone this project
