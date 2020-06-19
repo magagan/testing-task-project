@@ -1,8 +1,5 @@
 <?php
-
 use Yandex\Allure\Adapter\Annotation\Title;
-
-include __DIR__ . '/../../vendor/autoload.php';
 
 class LoginCest
 {
@@ -20,7 +17,7 @@ class LoginCest
         $faker = Faker\Factory::create();
         $I->fillField($loginPage->usernameEmailInput, $faker->safeEmail);
         $I->click($loginPage->loginButton);
-        $I->waitForElementVisible($loginPage->alertDanger);
+        $I->waitForElementVisible($loginPage->alertDanger, 30);
         $I->see('The specified user could not be found', $loginPage->alertDanger);
     }
 
@@ -47,7 +44,7 @@ class LoginCest
         $I->fillField($loginPage->usernameEmailInput, $I->getConfig('login_username'));
         $I->click($loginPage->loginButton);
 
-        $loginPage->loadingSpinnerChecking();
+        $I->waitForText($loginPage->responseTxt, 30);
 
         $I->click($loginPage->passwordTabSection);
         $I->waitForElementClickable($loginPage->forgotPassword);
@@ -86,25 +83,73 @@ class LoginCest
     {
         $I->fillField($loginPage->usernameEmailInput, $I->getConfig('login_username'));
         $I->click($loginPage->loginButton);
-        $loginPage->loadingSpinnerChecking();
-        $I->waitForElement($loginPage->mobileLoginCancelButton);
-        $I->seeElement($loginPage->mobileLoginCancelButton);
+        $I->waitForText($loginPage->responseTxt, 30);
+        $I->seeElement($loginPage->mobileLoginWidget);
         $I->click($loginPage->mobileAppLoginTab);
 
         $expandedValue = $I->grabAttributeFrom($loginPage->loginMethods, 'aria-expanded');
-        \PHPUnit\Framework\Assert::assertEquals('false' , $expandedValue, 'Mobile Login Tab Expanded' );
+        \PHPUnit\Framework\Assert::assertEquals('false', $expandedValue, 'Mobile Login Tab Expanded');
 
         $I->click($loginPage->mobileAppLoginTab);
         $I->waitForElementClickable($loginPage->noMobileAppYetTexLink, 30);
 
         $expandedValue = $I->grabAttributeFrom($loginPage->loginMethods, 'aria-expanded');
-        \PHPUnit\Framework\Assert::assertEquals('true' , $expandedValue, 'Mobile Login Tab Expanded' );
+        \PHPUnit\Framework\Assert::assertEquals('true', $expandedValue, 'Mobile Login Tab Expanded');
 
         $I->seeElement($loginPage->mobileAppLoginButton);
         $I->click($loginPage->noMobileAppYetTexLink);
         $I->see('DO NOT HAVE THE APPLICATION?', $loginPage->notHaveApplicationH4);
         $I->seeElement($loginPage->iosMobileLoginIcon);
         $I->seeElement($loginPage->androidMobileLoginIcon);
+    }
+
+    /**
+     * @Title("Verify messaging when user click CANCEL in mobile login widget")
+     */
+    public function mobileAppLoginCancelTest(AcceptanceTester $I, \Page\Acceptance\Login $loginPage)
+    {
+        $I->fillField($loginPage->usernameEmailInput, $I->getConfig('login_username'));
+        $I->click($loginPage->loginButton);
+        $I->waitForText($loginPage->responseTxt, 30);
+        $I->see('Cancel', $loginPage->mobileAppCancelButton, 30);
+        $I->click($loginPage->mobileAppCancelButton);
+        $I->waitForElement($loginPage->alertInfo, 30);
+        $I->see('Login cancelled. Please retry or select another login mode.', $loginPage->alertInfo);
+    }
+
+    /**
+     * @Title("Verify expired mobile login authentication")
+     */
+    public function mobileAppLoginVerificationExpiredRepeatTest(AcceptanceTester $I, \Page\Acceptance\Login $loginPage)
+    {
+        $I->fillField($loginPage->usernameEmailInput, $I->getConfig('login_username'));
+        $I->click($loginPage->loginButton);
+        $I->waitForText($loginPage->responseTxt, 30);
+
+        $mobileLoginAuthCode = $I->grabTextFrom($loginPage->mobileAppCode);
+        \PHPUnit\Framework\Assert::assertNotEmpty($mobileLoginAuthCode, 'Mobile login authentication code');
+
+        $I->waitForElement($loginPage->alertDanger, 140);
+        $I->see('Verification time expired', $loginPage->alertDanger);
+        $I->see('Repeat', $loginPage->mobileAppLoginButton);
+        $I->click($loginPage->mobileAppLoginButton);
+        $I->waitForText($loginPage->responseTxt, 30);
+        $I->seeElement($loginPage->mobileAppCode);
+
+        $mobileLoginAuthCode = $I->grabTextFrom($loginPage->mobileAppCode);
+        \PHPUnit\Framework\Assert::assertNotEmpty($mobileLoginAuthCode, 'Mobile login authentication code');
+    }
+
+    /**
+     * @Title("Verify messaging when user not receiving code within 60 seconds")
+     */
+    public function mobileAppLoginNotReceivingCodeTest(AcceptanceTester $I, \Page\Acceptance\Login $loginPage)
+    {
+        $I->fillField($loginPage->usernameEmailInput, $I->getConfig('login_username'));
+        $I->click($loginPage->loginButton);
+        $I->waitForText($loginPage->responseTxt, 30);
+        $I->waitForElement($loginPage->notReceivingCode, 60);
+        $I->see('Haven\'t received a code?', $loginPage->notReceivingCode);
     }
 
 }
