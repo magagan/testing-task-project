@@ -62,6 +62,9 @@ Login Page automated test using codeception framework.
     - LoginCest:invalidPasswordTest
     - LoginCest:accountRegistrationRedirectTest
     - LoginCest:mobileAppLoginTabTest
+    - LoginCest:mobileAppLoginCancelTest
+    - LoginCest:mobileAppLoginVerificationExpiredRepeatTest
+    - LoginCest:mobileAppLoginNotReceivingCodeTest
 
 #### Test Cases
 - Verify account not exists notification
@@ -70,6 +73,9 @@ Login Page automated test using codeception framework.
 - Verify notification for invalid password input
 - Verify user is redirected to account registration
 - Verify mobile login widget functionality
+- Verify messaging when user click CANCEL in mobile login widget
+- Verify expired mobile login authentication
+- Verify messaging when user not receiving code within 60 seconds
 
 
 #### Reporting
