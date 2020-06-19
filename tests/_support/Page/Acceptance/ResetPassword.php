@@ -16,7 +16,6 @@ class ResetPassword
     // Inputs
     public $resetPasswordCodeInput = 'input[name="code"]';
     public $passwordInput = 'input[name="password"]';
-    public $repeatPasswordInput = 'input[name="verification"]';
 
     // Buttons
     public $changePasswordButton = 'input[value="Change password"][type="submit"]';

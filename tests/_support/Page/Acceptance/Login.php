@@ -21,28 +21,30 @@ class Login
     public $loginContainer = 'div.authentication-login-form-container';
     public $mobileLoginWidget = '#login-methods-body-app_credentials';
     public $mobileAppLoginTab = '#login-methods-heading-app_credentials';
-    public $loadingSpinner = 'div.spinner';
 
     //buttons
     public $loginButton = 'button[type="submit"]';
-    public $mobileAppLoginButton = 'div[class="Loader"] div > button[type="button"]';
-    public $mobileLoginCancelButton = '#login-methods-body-app_credentials > div > button.btn.btn-danger';
+    public $mobileAppLoginButton = 'div[class="Loader"] button[type="button"]';
+    public $mobileAppCancelButton = 'button.btn-danger';
 
     //alert element
     public $alertInfo = 'div.alert.alert-info';
     public $alertDanger = 'div.alert.alert-danger';
     public $notHaveApplicationH4 = 'div[class="Loader"] span.h4.text-uppercase';
 
-    //text link
+    //text or link element
     public $forgotPassword = '//*[text()="Forgot password?"]';
     public $registerTextLink = 'a[href*="/registration"]';
     public $noMobileAppYetTexLink = '//*[text()="I do not have the mobile app yet"]';
-    public $loginMethods = '#login-methods div > a';
+    public $loginMethods = '#login-methods div a';
+    public $notReceivingCode = 'div .text-center p strong';
+    public $mobileAppCode = '.panel-body .text-center h1';
 
     //icon or logo
-    public $iosMobileLoginIcon = 'div[class="Loader"] a[href*="itunes.apple.com/app/"]';
-    public $androidMobileLoginIcon = 'div[class="Loader"] a[href*="play.google.com/store/apps/details"]';
+    public $iosMobileLoginIcon = 'a[href*="itunes.apple.com/app/"] .fa-apple';
+    public $androidMobileLoginIcon = 'a[href*="play.google.com/store/apps/details"] .fa-android';
 
+    public $responseTxt = 'We are waiting for your response';
 
     /**
      * Basic route example for your current URL
@@ -70,22 +72,12 @@ class Login
         $I->waitForElement($this->usernameEmailInput);
         $I->fillField($this->usernameEmailInput, $email);
         $I->click($this->loginButton);
-        $this->loadingSpinnerChecking();
+        $I->waitForText($this->responseTxt, 30);
         $I->click($this->passwordTabSection);
         $I->waitForElementVisible($this->passwordInput, 30);
         $I->fillField($this->passwordInput, $password);
         $I->click($this->loginButton);
 
-    }
-
-    public function loadingSpinnerChecking()
-    {
-        $I = $this->acceptanceTester;
-        $I->waitForElementVisible($this->loadingSpinner,30);
-        $I->waitForElementNotVisible($this->loadingSpinner,30);
-        $I->waitForElementVisible($this->passwordTabSection, 10);
-        $I->waitForElementVisible($this->loadingSpinner,30);
-        $I->waitForElementNotVisible($this->loadingSpinner,30);
     }
 
 }
